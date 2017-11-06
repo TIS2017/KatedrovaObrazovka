@@ -1,4 +1,4 @@
-- informacny text v dolnej liste
+﻿- informacny text v dolnej liste
 - overlay na hornej liste (napr. nazov katedry a podobne)
 - podpora pre obrazky
 - podpora pre videa
