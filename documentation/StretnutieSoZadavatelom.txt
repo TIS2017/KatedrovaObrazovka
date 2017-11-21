@@ -1,0 +1,12 @@
+﻿9.10.2017
+Prítomní: Ondrej Hrušovský, Simona Bačkovská
+
+Katedrová obrazovka:
+
+1. Zváženie technologckých možností – web – server, dynamická webstránka, vlastný klient, ktorý si stiahne obsah, alebo dohľadať už existujúci prostriedok,
+
+2. v obsahu - musí obsahovať názov katedry, hore a dole pásy bežiacich informácií, v strede výmena obrazov, video, prípadne aplikácia, počasie, ľudia z katedry,
+
+3. starý obsah sa zobrazovať nemôže – contet management system, aktualizácia obsahu adminom – najlepšie užívateľom
+
+4. dobudúcna zanalyzovať a rozpísať častí obrazovky – zamyslieť sa nad obsahom, čerpať inšpiráciu z katedrovej stránky.
