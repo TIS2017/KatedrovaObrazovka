@@ -23,6 +23,8 @@ public class Aplikacia extends Application {
 	public final static int WINDOW_SIZE = 900;
 	
 	public final static String TITLE = "Katedrova obrazovka";
+	
+	Spravca spravca;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -37,17 +39,9 @@ public class Aplikacia extends Application {
 		primaryStage.setScene(new Scene(root, WINDOW_SIZE, WINDOW_SIZE));
 		primaryStage.show();
 		
-		Ini ini = new Ini(new File("test.ini"));
-		System.out.println(ini.get("testnadpis", "kluc"));
+		spravca = new Spravca();		
+		spravca.nacitajVsetokObsah();	
 	}
 	
-	public void nacitajObsah()
-	{
 
-	}
-	
-	public void vykresliObsah()
-	{
-
-	}
 }
