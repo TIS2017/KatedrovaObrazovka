@@ -7,15 +7,29 @@ import java.util.List;
 public class Spravca {
 	
 	List<Obsah> obsah = new ArrayList<Obsah>();
+	
+	int aktualnyObsah = 0;
 
 	public void nacitajVsetokObsah()
 	{
-		List<String> podzlozkyObsahu = vsetkyPodzlozky(Nastavenia.zlozkaObsahu);
+		List<String> podzlozkyObsahu = vsetkyPodzlozky(Nastavenia.ZLOZKA_OBSAH);
+		obsah.clear();
 		
 		for(String s : podzlozkyObsahu)
 		{
-			int idObsahu = Integer.parseInt(s);		
-			obsah.add(CitacObsahu.nacitajObsah(idObsahu));
+			try {
+				int idObsahu = Integer.parseInt(s);		
+				
+				Obsah novy = CitacObsahu.nacitajObsah(idObsahu);
+				obsah.add(novy);
+				
+				if(novy.jePrioritny())
+				{
+					aktualnyObsah = obsah.size() - 1;
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Najdena neplatna zlozka obsahu: " + s);
+			}	
 		}
 	}
 	
@@ -34,8 +48,31 @@ public class Spravca {
 		return vysl;
 	}
 	
-	public void zacniZobrazovanieObsahu()
+	public void obsahSkoncil()
 	{
-		
+		zobrazNasledujuciObsah();
+	}
+	
+	public void zobrazAktualnyObsah()
+	{
+		if(obsah.size() > aktualnyObsah)
+		{
+			Obsah aktualny = obsah.get(aktualnyObsah);
+
+			if(!obsah.isEmpty())
+			{
+				aktualny.zobraz();
+			}
+		}
+	}
+	
+	public void zobrazNasledujuciObsah()
+	{
+		if(obsah.size() > aktualnyObsah)
+		{
+			aktualnyObsah += 1;
+			aktualnyObsah %= obsah.size();
+			zobrazAktualnyObsah();
+		}
 	}
 }
