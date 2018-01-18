@@ -1,37 +1,41 @@
 package obrazovka;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import org.ini4j.Ini;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.util.Duration;
+
 public class Obsah {
 	
-	public static final String formatDatumCas = "dd.MM.yyyy,HH:mm";
+	public static final String INI_NAZOV = "obsah.ini";
+	public static final String INI_FORMAT_DATUM_CAS = "dd.MM.yyyy,HH:mm";	
+	public static final String INI_KATEGORIA_OBSAH = "Obsah";	
+	public static final String INI_KLUC_CAS_ZACIATOK = "CasZaciatok";
+	public static final String INI_KLUC_CAS_KONIEC = "CasKoniec";
+	public static final String INI_KLUC_PRIORITNY = "Prioritny";
+	public static final String INI_KLUC_TRVANIE_ZOBRAZOVANIA = "TrvanieZobrazovania";
+	public static final String INI_KLUC_ZOBRAZ_DOLNY_PANEL = "ZobrazDolnyPanel";
+	public static final String INI_KLUC_ZOBRAZ_HORNY_PANEL = "ZobrazHornyPanel";
+	public static final String INI_KLUC_TYP = "Typ";
 	
-	public static final String konfigKategoria = "Obsah";
-	
-	public static final String klucTyp = "Typ";
-	public static final String klucTypObrazok = "obrazok";
-	public static final String klucTypVideo = "video";
-	
-	public static final String klucCasZaciatok = "CasZaciatok";
+	private int id;	
 	private LocalDateTime casZaciatok;
-	
-	public static final String klucCasKoniec = "CasKoniec";
 	private LocalDateTime casKoniec;
+	private boolean prioritny;	
+	private double trvanieZobrazovania;	
+	private boolean zobrazDolnyPanel;
+	private boolean zobrazHornyPanel;
 	
-	public static final String klucPrioritny = "Prioritny";
-	private boolean prioritny = false;
-	
-	public static final String klucTrvanieZobrazovania = "TrvanieZobrazovania";
-	private int trvanieZobrazovania = 10;
-	
-	public static final String klucZobrazDolnyPanel = "ZobrazDolnyPanel";
-	private boolean zobrazDolnyPanel = false;
-	
-	public static final String klucZobrazHornyPanel = "ZobrazHornyPanel";
-	private boolean zobrazHornyPanel = false;
+	public int ziskajId() {
+		return id;
+	}
 	
 	public LocalDateTime ziskajCasZaciatok() {
 		return casZaciatok;
@@ -45,7 +49,7 @@ public class Obsah {
 		return prioritny;
 	}
 
-	public int ziskajTrvanieZobrazovania() {
+	public double ziskajTrvanieZobrazovania() {
 		return trvanieZobrazovania;
 	}
 
@@ -57,43 +61,82 @@ public class Obsah {
 		return zobrazHornyPanel;
 	}
 
-	public Obsah(Ini mojKonfiguracnySubor)
+	public Obsah(int mojeId, Ini mojKonfiguracnySubor) {
+		id = mojeId;		
+		casZaciatok = parsujDatumCas(mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_CAS_ZACIATOK));
+		casKoniec = parsujDatumCas(mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_CAS_KONIEC));
+		prioritny = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_PRIORITNY, boolean.class);
+		trvanieZobrazovania = parsujCas(mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_TRVANIE_ZOBRAZOVANIA));
+		zobrazDolnyPanel = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_ZOBRAZ_DOLNY_PANEL, boolean.class);
+		zobrazHornyPanel = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_ZOBRAZ_HORNY_PANEL, boolean.class);
+	}
+	
+	public LocalDateTime parsujDatumCas(String s)
 	{
-		DateTimeFormatter DatumCasFormatter = DateTimeFormatter.ofPattern(formatDatumCas);	
-		casZaciatok = LocalDateTime.parse(mojKonfiguracnySubor.get(konfigKategoria, klucCasZaciatok), DatumCasFormatter);
-		casKoniec = LocalDateTime.parse(mojKonfiguracnySubor.get(konfigKategoria, klucCasKoniec), DatumCasFormatter);
-		
-		final String prioritnyString = mojKonfiguracnySubor.get(konfigKategoria, klucPrioritny).toLowerCase();		
-		if(prioritnyString.equals(Boolean.toString(true)))
+		if(s == null)
 		{
-			prioritny = true;
-		}
-		else if(prioritnyString.equals(Boolean.toString(false)))
-		{
-			prioritny = false;
+			return null;
 		}
 		
-		final String trvanieZobrazovaniaString = mojKonfiguracnySubor.get(konfigKategoria, klucTrvanieZobrazovania);		
-		trvanieZobrazovania = Integer.parseInt(trvanieZobrazovaniaString);
+		DateTimeFormatter DatumCasFormatter = DateTimeFormatter.ofPattern(INI_FORMAT_DATUM_CAS);	
 		
-		final String zobrazDolnyPanelString = mojKonfiguracnySubor.get(konfigKategoria, klucZobrazDolnyPanel).toLowerCase();		
-		if(zobrazDolnyPanelString.equals(Boolean.toString(true)))
+		return LocalDateTime.parse(s, DatumCasFormatter);
+	}
+	
+	public double parsujCas(String s)
+	{
+		if(s == null)
 		{
-			zobrazDolnyPanel = true;
-		}
-		else if(zobrazDolnyPanelString.equals(Boolean.toString(false)))
-		{
-			zobrazDolnyPanel = false;
+			return 0.0;
 		}
 		
-		final String zobrazHornyPanelString = mojKonfiguracnySubor.get(konfigKategoria, klucZobrazHornyPanel).toLowerCase();		
-		if(zobrazHornyPanelString.equals(Boolean.toString(true)))
+		final String Splitnute[] = s.split(":");
+		float vysl = Integer.parseInt(Splitnute[0]) * 60; // Minuty		
+		
+		vysl += Integer.parseInt(Splitnute[1]); // Sekundy		
+		
+		if(Splitnute.length == 3) 
 		{
-			zobrazHornyPanel = true;
+			vysl += Integer.parseInt(Splitnute[2]) / 100.0; // Stotiny
 		}
-		else if(zobrazHornyPanelString.equals(Boolean.toString(false)))
-		{
-			zobrazHornyPanel = false;
+		
+		return vysl;
+	}
+
+	public boolean spustiCasovacUkoncenia() {
+		final double trvanie = 1000; // sec to milis
+	
+		if(trvanie > 0) {		
+			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(trvanie), new EventHandler<ActionEvent>() {
+						public void handle(ActionEvent event) {
+							skry();
+						}
+					}));	
+			timeline.play();	
+			return true;
+		}
+		else {		
+			return false;
 		}
 	}
+	
+	public void zobraz() {
+		if(spustiCasovacUkoncenia()) {
+			zobrazeny();
+		}
+		else {
+			skry();
+		}
+	}
+	
+	protected void zobrazeny() { }	
+	
+	public void skry() {
+		skryty();
+		Main.spravca.obsahSkoncil();
+	}
+	
+	protected void skryty() { }
+	
+	public void vycisti() { }
 }
