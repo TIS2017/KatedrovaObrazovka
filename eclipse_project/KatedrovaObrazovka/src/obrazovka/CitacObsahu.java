@@ -9,7 +9,7 @@ public class CitacObsahu {
 
 	public static Obsah nacitajObsah(int id)
 	{
-		String cesta = Nastavenia.zlozkaObsahu + Nastavenia.separator + Integer.toString(id) + Nastavenia.separator + Nastavenia.konfiguracnySuborObsahu;
+		final String cesta = Nastavenia.ZLOZKA_OBSAH + Nastavenia.SEPARATOR + Integer.toString(id) + Nastavenia.SEPARATOR + Obsah.INI_NAZOV;	
 		Ini konfigObsahu;
 		
 		try {
@@ -17,20 +17,22 @@ public class CitacObsahu {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}		
 		
-		
-		String typ = konfigObsahu.get(Obsah.konfigKategoria, Obsah.klucTyp).toLowerCase();
-		
+		final String typ = konfigObsahu.get(Obsah.INI_KATEGORIA_OBSAH, Obsah.INI_KLUC_TYP);
 		Obsah novyObsah = null;
 		
-		if(typ.equals(Obsah.klucTypObrazok))
+		if(typ.equalsIgnoreCase(Obsah_Obrazok.INI_HODNOTA_TYP_OBRAZOK))
 		{
-			novyObsah = new Obrazok(konfigObsahu);
+			novyObsah = new Obsah_Obrazok(id, konfigObsahu);
 		}
-		else if(typ.equals(Obsah.klucTypVideo))
+		else if(typ.equalsIgnoreCase(Obsah_YouTubeVideo.INI_HODNOTA_TYP_YOUTUBE_VIDEO))
 		{
-			novyObsah = new Video(konfigObsahu);
+			novyObsah = new Obsah_YouTubeVideo(id, konfigObsahu);
+		}
+		else if(typ.equalsIgnoreCase(Obsah_Aplikacia.INI_HODNOTA_TYP_APLIKACIA))
+		{
+			novyObsah = new Obsah_Aplikacia(id, konfigObsahu);
 		}
 		
 		return novyObsah;
