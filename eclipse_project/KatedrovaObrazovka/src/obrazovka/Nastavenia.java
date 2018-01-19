@@ -4,9 +4,7 @@ import java.io.File;
 
 public class Nastavenia {
 
-	public static final String zlozkaObsahu = "Obsah";
-	
-	public static final String separator = File.separator;
-	
-	public static final String konfiguracnySuborObsahu = "obsah.ini";
+	public static final String ZLOZKA_OBSAH = "Obsah";
+	public static final String ZLOZKA_ARCHIV = "Archiv";
+	public static final String SEPARATOR = File.separator;
 }
