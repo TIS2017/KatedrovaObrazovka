@@ -13,6 +13,10 @@ public class Spravca {
 	List<Obsah> obsah = new ArrayList<Obsah>();
 	
 	int aktualnyObsah = 0;
+	
+	public HornyPanel hornyPanel = new HornyPanel();
+	
+	public DolnyPanel dolnyPanel = new DolnyPanel();
 
 	public void nacitajVsetokObsah()
 	{

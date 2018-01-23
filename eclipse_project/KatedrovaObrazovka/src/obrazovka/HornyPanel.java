@@ -1,8 +1,9 @@
 package obrazovka;
 
-public class DolnyPanel {
-
-	public DolnyPanel()
+public class HornyPanel {
+	
+	
+	public HornyPanel()
 	{
 
 	}
@@ -16,4 +17,5 @@ public class DolnyPanel {
 	{
 
 	}
+	
 }

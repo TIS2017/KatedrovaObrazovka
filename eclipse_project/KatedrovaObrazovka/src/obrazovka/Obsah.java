@@ -155,6 +155,22 @@ public class Obsah {
 	
 	public void zobraz() {
 		if(spustiCasovacUkoncenia()) {
+			if(zobrazHornyPanel)
+			{
+				Main.spravca.hornyPanel.zobraz();
+			}
+			else
+			{
+				Main.spravca.hornyPanel.skry();
+			}
+			if(zobrazDolnyPanel)
+			{
+				Main.spravca.dolnyPanel.zobraz();
+			}
+			else
+			{
+				Main.spravca.dolnyPanel.skry();
+			}
 			zobrazeny();
 		}
 		else {
