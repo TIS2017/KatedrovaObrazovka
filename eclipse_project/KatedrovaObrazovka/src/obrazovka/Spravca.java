@@ -1,6 +1,10 @@
 package obrazovka;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,10 +62,17 @@ public class Spravca {
 		if(obsah.size() > aktualnyObsah)
 		{
 			Obsah aktualny = obsah.get(aktualnyObsah);
-
-			if(!obsah.isEmpty())
+			
+			if(skontrolujCasoveObmedzenie(aktualny))
 			{
-				aktualny.zobraz();
+				if(!obsah.isEmpty())
+				{
+					aktualny.zobraz();
+				}
+			}
+			else
+			{
+				zobrazNasledujuciObsah();
 			}
 		}
 	}
@@ -74,5 +85,37 @@ public class Spravca {
 			aktualnyObsah %= obsah.size();
 			zobrazAktualnyObsah();
 		}
+	}
+	
+	public boolean skontrolujCasoveObmedzenie(Obsah obsahNaKontrolu)
+	{
+		if(obsahNaKontrolu.jeZastaraly())
+		{
+			presunObsahDoArchivu(obsahNaKontrolu);
+			
+			if(!obsah.isEmpty())
+			{
+				aktualnyObsah %= obsah.size();
+			}
+			return false;
+		}
+
+		return obsahNaKontrolu.mozeBytPrehrany();
+	}
+	
+	public void presunObsahDoArchivu(Obsah obsahNaPresunutie)
+	{
+		Path zdroj = new File(Nastavenia.ZLOZKA_OBSAH + Nastavenia.SEPARATOR + Integer.toString(obsahNaPresunutie.ziskajId())).toPath();
+		Path ciel = new File(Nastavenia.ZLOZKA_ARCHIV + Nastavenia.SEPARATOR + Integer.toString(obsahNaPresunutie.ziskajId())).toPath();
+		
+		obsahNaPresunutie.vycisti();
+		
+		try {
+			Files.move(zdroj, ciel, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		obsah.remove(obsahNaPresunutie);
 	}
 }

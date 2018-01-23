@@ -102,10 +102,43 @@ public class Obsah {
 		
 		return vysl;
 	}
-
-	public boolean spustiCasovacUkoncenia() {
-		final double trvanie = 1000; // sec to milis
 	
+	public boolean jeZastaraly()
+	{
+		if(casKoniec == null)
+		{
+			return false;
+		}
+		
+		return casKoniec.isBefore(LocalDateTime.now());
+	}
+	
+	public boolean mozeBytPrehrany()
+	{
+		boolean zaciatokOk = true;
+		boolean koniecOk = true;
+		
+		if(casZaciatok != null)
+		{
+			zaciatokOk = casZaciatok.isBefore(LocalDateTime.now());
+		}
+		if(casKoniec != null)
+		{
+			koniecOk = casKoniec.isAfter(LocalDateTime.now());
+		}
+		
+		return zaciatokOk && koniecOk;
+	}
+	
+	public double casDoKoncaCasovehoObmedzenia()
+	{
+		ZoneId zoneId = ZoneId.systemDefault();
+		return casKoniec.atZone(zoneId).toEpochSecond() - LocalDateTime.now(zoneId).atZone(zoneId).toEpochSecond();	
+	}
+	
+	public boolean spustiCasovacUkoncenia() {
+		final double trvanie = jePrioritny() ? casDoKoncaCasovehoObmedzenia() * 1000 : trvanieZobrazovania * 1000; // sec to milis
+		
 		if(trvanie > 0) {		
 			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(trvanie), new EventHandler<ActionEvent>() {
 						public void handle(ActionEvent event) {
