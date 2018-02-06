@@ -13,10 +13,10 @@ import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 public class Obsah {
-	
+
 	public static final String INI_NAZOV = "obsah.ini";
-	public static final String INI_FORMAT_DATUM_CAS = "dd.MM.yyyy,HH:mm";	
-	public static final String INI_KATEGORIA_OBSAH = "Obsah";	
+	public static final String INI_FORMAT_DATUM_CAS = "dd.MM.yyyy,HH:mm";
+	public static final String INI_KATEGORIA_OBSAH = "Obsah";
 	public static final String INI_KLUC_CAS_ZACIATOK = "CasZaciatok";
 	public static final String INI_KLUC_CAS_KONIEC = "CasKoniec";
 	public static final String INI_KLUC_PRIORITNY = "Prioritny";
@@ -24,19 +24,19 @@ public class Obsah {
 	public static final String INI_KLUC_ZOBRAZ_DOLNY_PANEL = "ZobrazDolnyPanel";
 	public static final String INI_KLUC_ZOBRAZ_HORNY_PANEL = "ZobrazHornyPanel";
 	public static final String INI_KLUC_TYP = "Typ";
-	
-	private int id;	
+
+	private int id;
 	private LocalDateTime casZaciatok;
 	private LocalDateTime casKoniec;
-	private boolean prioritny;	
-	private double trvanieZobrazovania;	
+	private boolean prioritny;
+	private double trvanieZobrazovania;
 	private boolean zobrazDolnyPanel;
 	private boolean zobrazHornyPanel;
-	
+
 	public int ziskajId() {
 		return id;
 	}
-	
+
 	public LocalDateTime ziskajCasZaciatok() {
 		return casZaciatok;
 	}
@@ -62,7 +62,7 @@ public class Obsah {
 	}
 
 	public Obsah(int mojeId, Ini mojKonfiguracnySubor) {
-		id = mojeId;		
+		id = mojeId;
 		casZaciatok = parsujDatumCas(mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_CAS_ZACIATOK));
 		casKoniec = parsujDatumCas(mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_CAS_KONIEC));
 		prioritny = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_PRIORITNY, boolean.class);
@@ -70,122 +70,109 @@ public class Obsah {
 		zobrazDolnyPanel = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_ZOBRAZ_DOLNY_PANEL, boolean.class);
 		zobrazHornyPanel = mojKonfiguracnySubor.get(INI_KATEGORIA_OBSAH, INI_KLUC_ZOBRAZ_HORNY_PANEL, boolean.class);
 	}
-	
-	public LocalDateTime parsujDatumCas(String s)
-	{
-		if(s == null)
-		{
+
+	public LocalDateTime parsujDatumCas(String s) {
+		if (s == null) {
 			return null;
 		}
-		
-		DateTimeFormatter DatumCasFormatter = DateTimeFormatter.ofPattern(INI_FORMAT_DATUM_CAS);	
-		
+
+		DateTimeFormatter DatumCasFormatter = DateTimeFormatter.ofPattern(INI_FORMAT_DATUM_CAS);
+
 		return LocalDateTime.parse(s, DatumCasFormatter);
 	}
-	
-	public double parsujCas(String s)
-	{
-		if(s == null)
-		{
+
+	public double parsujCas(String s) {
+		if (s == null) {
 			return 0.0;
 		}
-		
+
 		final String Splitnute[] = s.split(":");
-		float vysl = Integer.parseInt(Splitnute[0]) * 60; // Minuty		
-		
-		vysl += Integer.parseInt(Splitnute[1]); // Sekundy		
-		
-		if(Splitnute.length == 3) 
-		{
+		float vysl = Integer.parseInt(Splitnute[0]) * 60; // Minuty
+
+		vysl += Integer.parseInt(Splitnute[1]); // Sekundy
+
+		if (Splitnute.length == 3) {
 			vysl += Integer.parseInt(Splitnute[2]) / 100.0; // Stotiny
 		}
-		
+
 		return vysl;
 	}
-	
-	public boolean jeZastaraly()
-	{
-		if(casKoniec == null)
-		{
+
+	public boolean jeZastaraly() {
+		if (casKoniec == null) {
 			return false;
 		}
-		
+
 		return casKoniec.isBefore(LocalDateTime.now());
 	}
-	
-	public boolean mozeBytPrehrany()
-	{
+
+	public boolean mozeBytPrehrany() {
 		boolean zaciatokOk = true;
 		boolean koniecOk = true;
-		
-		if(casZaciatok != null)
-		{
+
+		if (casZaciatok != null) {
 			zaciatokOk = casZaciatok.isBefore(LocalDateTime.now());
 		}
-		if(casKoniec != null)
-		{
+		if (casKoniec != null) {
 			koniecOk = casKoniec.isAfter(LocalDateTime.now());
 		}
-		
+
 		return zaciatokOk && koniecOk;
 	}
-	
-	public double casDoKoncaCasovehoObmedzenia()
-	{
+
+	public double casDoKoncaCasovehoObmedzenia() {
 		ZoneId zoneId = ZoneId.systemDefault();
-		return casKoniec.atZone(zoneId).toEpochSecond() - LocalDateTime.now(zoneId).atZone(zoneId).toEpochSecond();	
+		return casKoniec.atZone(zoneId).toEpochSecond() - LocalDateTime.now(zoneId).atZone(zoneId).toEpochSecond();
 	}
-	
+
 	public boolean spustiCasovacUkoncenia() {
-		final double trvanie = jePrioritny() ? casDoKoncaCasovehoObmedzenia() * 1000 : trvanieZobrazovania * 1000; // sec to milis
-		
-		if(trvanie > 0) {		
+		final double trvanie = jePrioritny() ? casDoKoncaCasovehoObmedzenia() * 1000 : trvanieZobrazovania * 1000; // sec
+																													// to
+																													// milis
+
+		if (trvanie > 0) {
 			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(trvanie), new EventHandler<ActionEvent>() {
-						public void handle(ActionEvent event) {
-							skry();
-						}
-					}));	
-			timeline.play();	
+				@Override
+				public void handle(ActionEvent event) {
+					skry();
+				}
+			}));
+			timeline.play();
 			return true;
-		}
-		else {		
+		} else {
 			return false;
 		}
 	}
-	
+
 	public void zobraz() {
-		if(spustiCasovacUkoncenia()) {
-			if(zobrazHornyPanel)
-			{
+		if (spustiCasovacUkoncenia()) {
+			if (zobrazHornyPanel) {
 				Main.spravca.hornyPanel.zobraz();
-			}
-			else
-			{
+			} else {
 				Main.spravca.hornyPanel.skry();
 			}
-			if(zobrazDolnyPanel)
-			{
+			if (zobrazDolnyPanel) {
 				Main.spravca.dolnyPanel.zobraz();
-			}
-			else
-			{
+			} else {
 				Main.spravca.dolnyPanel.skry();
 			}
 			zobrazeny();
-		}
-		else {
+		} else {
 			skry();
 		}
 	}
-	
-	protected void zobrazeny() { }	
-	
+
+	protected void zobrazeny() {
+	}
+
 	public void skry() {
 		skryty();
 		Main.spravca.obsahSkoncil();
 	}
-	
-	protected void skryty() { }
-	
-	public void vycisti() { }
+
+	protected void skryty() {
+	}
+
+	public void vycisti() {
+	}
 }

@@ -1,32 +1,26 @@
 package obrazovka;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import manazer_obsahu.ManazerObsahu;
 
 public class Main extends Application {
-	
+
 	/**
 	 * Root java fx element.
 	 */
 	public static BorderPane root;
-	
+
 	public static Stage primaryStage;
-	
+
 	/**
 	 * Application scale.
 	 */
 	public final static int WINDOW_SIZE = 900;
-	
+
 	public final static String TITLE = "Katedrova obrazovka";
-	
+
 	public static Spravca spravca;
 
 	public static void main(String[] args) {
@@ -42,13 +36,12 @@ public class Main extends Application {
 		root.setStyle("-fx-background-color: black;");
 
 		primaryStage.setScene(new Scene(root, WINDOW_SIZE, WINDOW_SIZE));
-		//primaryStage.setFullScreen(true);
+		// primaryStage.setFullScreen(true);
 		primaryStage.show();
-		
-		spravca = new Spravca();		
-		spravca.nacitajVsetokObsah();	
+
+		spravca = new Spravca();
+		spravca.nacitajVsetokObsah();
 		spravca.zobrazAktualnyObsah();
 	}
-	
 
 }

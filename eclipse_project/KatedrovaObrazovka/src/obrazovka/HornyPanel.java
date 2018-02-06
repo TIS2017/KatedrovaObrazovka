@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 
 public class HornyPanel {
 	ImageView imageView;
-	
+
 	public HornyPanel() {
 		Image image = null;
 		try {
@@ -17,8 +17,8 @@ public class HornyPanel {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
-		imageView = new ImageView();	
+		}
+		imageView = new ImageView();
 		imageView.setPreserveRatio(true);
 		imageView.fitHeightProperty().bind(Main.primaryStage.heightProperty());
 		imageView.fitWidthProperty().bind(Main.primaryStage.widthProperty());
@@ -26,13 +26,13 @@ public class HornyPanel {
 		imageView.setCache(true);
 		imageView.setImage(image);
 	}
-	
+
 	public void zobraz() {
-		Main.root.setTop(imageView);		
+		Main.root.setTop(imageView);
 	}
-	
+
 	public void skry() {
 		Main.root.setTop(null);
 	}
-	
+
 }
