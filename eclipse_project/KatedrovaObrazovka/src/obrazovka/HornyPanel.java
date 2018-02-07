@@ -15,7 +15,6 @@ public class HornyPanel {
 		try {
 			image = new Image(new FileInputStream(new File(Nastavenia.HORNY_PANEL_SUBOR)));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		imageView = new ImageView();

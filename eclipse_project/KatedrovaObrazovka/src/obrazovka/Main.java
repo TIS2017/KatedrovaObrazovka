@@ -7,19 +7,9 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	/**
-	 * Root java fx element.
-	 */
 	public static BorderPane root;
 
 	public static Stage primaryStage;
-
-	/**
-	 * Application scale.
-	 */
-	public final static int WINDOW_SIZE = 900;
-
-	public final static String TITLE = "Katedrova obrazovka";
 
 	public static Spravca spravca;
 
@@ -29,14 +19,15 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage newPrimaryStage) throws Exception {
+		Nastavenia.nacitaj();
 		// TODO Auto-generated method stub
 		primaryStage = newPrimaryStage;
-		primaryStage.setTitle(TITLE);
+		primaryStage.setTitle(Nastavenia.NAZOV_APLIKACIE);
 		root = new BorderPane();
-		root.setStyle("-fx-background-color: black;");
+		root.setStyle("-fx-background-color: " + Nastavenia.FARBA_POZADIA + ";");
 
-		primaryStage.setScene(new Scene(root, WINDOW_SIZE, WINDOW_SIZE));
-		// primaryStage.setFullScreen(true);
+		primaryStage.setScene(new Scene(root, Nastavenia.MINIMALIZOVANA_VELKOST, Nastavenia.MINIMALIZOVANA_VELKOST));
+		primaryStage.setFullScreen(Nastavenia.CELA_OBRAZOVKA);
 		primaryStage.show();
 
 		spravca = new Spravca();

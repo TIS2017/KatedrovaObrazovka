@@ -21,12 +21,14 @@ import javafx.util.Duration;
 public class DolnyPanel {
 	private Text text;
 	private ObjectProperty<Font> fontTracking = new SimpleObjectProperty<Font>(Font.getDefault());
-
+	private Timeline timeline;
+	
 	public DolnyPanel() {
 		String spravy = nacitajSpravy();
 
 		text = new Text(spravy);
 		text.setFill(Nastavenia.DOLNY_PANEL_FONT_FARBA);
+		text.setTranslateX(Main.root.getWidth());
 		text.fontProperty().bind(fontTracking);
 		aktualizujVelkost();
 
@@ -67,12 +69,16 @@ public class DolnyPanel {
 	}
 
 	public void spustiAnimaciu() {
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20), new EventHandler<ActionEvent>() {
+		if(timeline != null) {
+			timeline.stop();
+		}
+		
+		timeline = new Timeline(new KeyFrame(Duration.millis(Nastavenia.DOLNY_PANEL_TIMELINE_AKTUALIZACIA_MS), new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				text.setTranslateX(text.getTranslateX() - Nastavenia.DOLNY_PANEL_RYCHLOST);
 				if (text.getTranslateX() < -1.0 * text.getLayoutBounds().getWidth()) {
-					text.setTranslateX(text.getLayoutBounds().getWidth());
+					text.setTranslateX(Main.root.getWidth());
 				}
 			}
 		}));
