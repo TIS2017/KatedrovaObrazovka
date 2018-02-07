@@ -5,6 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+
+/**
+ * 
+ * @author Ondrej Hrusovsky, Simona Backovska
+ *
+ */
 public class Main extends Application {
 
 	public static BorderPane root;
